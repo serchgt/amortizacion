@@ -1,0 +1,121 @@
+<div class="container">
+  <br>
+  <div class="row">
+    <div class="col">
+      <h2>Datos a ingresar</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <label for="monto">Monto a prestar</label>
+      <input type="number" step=".01" required min="0.01" class="form-control" id="monto" [(ngModel)]="monto">
+    </div>
+    <div class="col">
+      <label for="cuotas">Cuotas</label>
+      <input type="number" step="1" required min="1" value="60" class="form-control" id="cuotas" [(ngModel)]="cuotas">
+    </div>
+    <div class="col">
+      <label for="tasa">Tasa</label>
+      <input type="number" step=".01" required min="0.01" value="12.00" class="form-control" id="tasa"
+        [(ngModel)]="tasa">
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col">
+      <label class="mr-sm-2" for="inlineFormCustomSelect">Tipo de cálculo</label>
+      <select class="custom-select mr-sm-2" id="tipocal" [(ngModel)]="tipocal">
+        <option value="360" selected>360</option>
+        <option value="365">365</option>
+      </select>
+    </div>
+    <div class="col">
+      <label class="mr-sm-2" for="inlineFormCustomSelect">Base de cálculo</label>
+      <select class="custom-select mr-sm-2" id="basecal" [(ngModel)]="basecal">
+        <option value="360" selected>360</option>
+        <option value="365">365</option>
+      </select>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col">
+      <label class="mr-sm-2">Desembolso</label>
+      <input type="date" id="fecini" [(ngModel)]="fecini" />
+    </div>
+  </div>
+
+  <br>
+  <div class="row">
+    <div class="col">
+      <button class="btn btn-outline-secondary" (click)="calCuotas()">Calcular</button>
+    </div>
+    <div class="col" *ngIf="calculado>0">
+      <button class="btn btn-outline-primary" (click)="amortizar()">Amortizar</button>
+    </div>
+  </div>
+  <hr>
+
+  <div *ngIf="calculado>0" id="pdfTable" #pdfTable>
+    <h2 style="background-color: #27e2aa; color: #0c606d; text-align: center; ">Tabla de Amortización</h2>
+    <hr>
+    <table>
+      <tr class="row">
+        <td class="col">
+          Cuota
+        </td>
+        <td class="col">
+          {{cuota}}
+        </td>
+      </tr>
+    </table>
+    <hr>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th style="text-align: right; background-color: #007bff">No. Cuota</th>
+          <th style="text-align: right; background-color: #007bff">No. Pago</th>
+          <th style="text-align: right; background-color: #007bff">Fecha inicial</th>
+          <th style="text-align: right; background-color: #007bff">Fecha pago</th>
+          <th style="text-align: right; background-color: #007bff">Días</th>
+          <th style="text-align: right; background-color: #007bff">Valor</th>
+          <th style="text-align: right; background-color: #007bff">Capital</th>
+          <th style="text-align: right; background-color: #007bff">Intereses</th>
+          <th style="text-align: right; background-color: #007bff">Saldo</th>
+          <th style="text-align: right; background-color: #007bff">Int. Acumulado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let reg of registro; let i = index" (click)="show(i)">
+          <td [ngStyle]="{'background-color': '#fff'}" style="text-align: right;">
+            {{reg.cuota}}</td>
+          <td [ngStyle]="{'background-color':(!reg.cuota) ? '#17a2b8' : '#fff'}" style="text-align: right;">
+            {{reg.pago}}</td>
+          <td [ngStyle]="{'background-color':(!reg.cuota) ? '#17a2b8' : '#fff'}" style="text-align: right;">
+            {{reg.fecini | date:'yyyy/MM/dd'}}</td>
+          <td [ngStyle]="{'background-color':(!reg.cuota) ? '#17a2b8' : '#fff'}" style="text-align: right;">
+            {{reg.fecfin | date:'yyyy/MM/dd'}}</td>
+          <td [ngStyle]="{'background-color':(!reg.cuota) ? '#17a2b8' : '#fff'}" style="text-align: right;">
+            {{reg.dias}}</td>
+          <td [ngStyle]="{'background-color':(!reg.cuota) ? '#17a2b8' : '#fff'}" style="text-align: right;">
+            {{reg.valor | number:'1.2-2'}}
+          </td>
+          <td [ngStyle]="{'background-color':(!reg.cuota) ? '#17a2b8' : '#fff'}" style="text-align: right;">
+            {{reg.capital | number:'1.2-2'}}
+          </td>
+          <td [ngStyle]="{'background-color':(!reg.cuota) ? '#17a2b8' : '#fff'}" style="text-align: right;">
+            {{reg.interes | number:'1.2-2'}}
+          </td>
+          <td [ngStyle]="{'background-color':(!reg.cuota) ? '#17a2b8' : '#fff'}" style="text-align: right;">
+            {{reg.saldo | number:'1.2-2'}}
+          </td>
+          <td [ngStyle]="{'background-color':(!reg.cuota) ? '#17a2b8' : '#fff'}" style="text-align: right;">
+            {{reg.intacu | number:'1.2-2'}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <button *ngIf="calculado>0" class="btn btn-outline-primary" (click)=" downloadAsPDF()">Export To PDF</button>
+</div>
